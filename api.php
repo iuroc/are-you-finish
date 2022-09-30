@@ -1,6 +1,9 @@
 <?php
 
-$conn = mysqli_connect('127.0.0.1', 'root', '123456', 'ponconsoft');
+$username = 'root';
+$password = '123456';
+$database = 'ponconsoft';
+$conn = mysqli_connect('127.0.0.1', $username, $password, $database);
 $table = 'jafgegfer';
 // 初始化数据表
 init_database($conn);

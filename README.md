@@ -8,8 +8,11 @@
 - 开发时间：2022年9月30
 - 官网：https://apee.top
 
+![](frame_generic_light.png)
+
 ## 使用方法
 
+- 将 `api.php` 中的数据库连接信息填写完整
 - `list.txt` 是名单，一行填写一个姓名，如下：
 
     ```
