@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="zh-CH">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>名单统计</title>
+    <link rel="stylesheet" href="https://cdn.staticfile.org/bootstrap/4.6.0/css/bootstrap.min.css" />
+    <script src="https://cdn.staticfile.org/jquery/3.2.1/jquery.min.js"></script>
+    <script src="https://cdn.staticfile.org/bootstrap/4.6.0/js/bootstrap.bundle.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            $.get('api.php?order=get_list', function (data) {
+                data = typeof data == 'object' ? data : JSON.parse(data)
+                if (data.code == 200) {
+                    var html = ''
+                    data.data.forEach(item => {
+                        html += `<option value="${item[0]}">${item[0]}</option>`
+                    })
+                    $('#inputGroupSelect').html(html)
+                    $('#inputGroupSelect').val(data.data[0][0])
+                    $('[name=finish][value=' + data.data[0][1] + ']').click()
+                    return
+                }
+                alert(data.msg)
+            })
+            $('#inputGroupSelect').change(function () {
+                $('.submit_asa').removeAttr('disabled').html('提交')
+                $.get('api.php', {
+                    order: 'get_data',
+                    name: $('#inputGroupSelect').val()
+                }, function (data) {
+                    data = typeof data == 'object' ? data : JSON.parse(data)
+                    if (data.code == 200) {
+                        $('[name=finish][value=' + data.data.finish + ']').click()
+                        return
+                    }
+                    alert(data.msg)
+                })
+            })
+            $('input[name=finish]').click(function () {
+                $('.submit_asa').removeAttr('disabled').html('提交')
+            })
+        })
+
+        function submit(ele) {
+            var name = $('#inputGroupSelect').val()
+            var finish = $('input[name=finish]:checked').val()
+            if (finish == undefined) {
+                alert('选项不能为空')
+                return
+            }
+            $.get('api.php', {
+                order: 'submit',
+                name: name,
+                finish: finish
+            }, function (data) {
+                data = typeof data == 'object' ? data : JSON.parse(data)
+                if (data.code == 200) {
+                    alert('提交成功')
+                    $(ele).attr('disabled', 'disabled').html('提交成功')
+                    return
+                }
+                alert(data.msg)
+            })
+        }
+    </script>
+</head>
+
+<body>
+    <div class="container">
+        <h3 class="my-3 mt-sm-4">你是否完成心理健康普查</h3>
+        <div class="input-group mb-3">
+            <div class="input-group-prepend">
+                <label class="input-group-text" for="inputGroupSelect">学生姓名</label>
+            </div>
+            <select class="custom-select" id="inputGroupSelect" name="name"></select>
+        </div>
+        <div class="input-group mb-3">
+            <div class="input-group-prepend">
+                <div class="input-group-text">完成情况</div>
+            </div>
+            <div class="form-control">
+                <div class="custom-control custom-radio d-inline-block mr-2">
+                    <input type="radio" id="customRadio1" name="finish" class="custom-control-input" value="1">
+                    <label class="custom-control-label" for="customRadio1">已完成</label>
+                </div>
+                <div class="custom-control custom-radio d-inline-block">
+                    <input type="radio" id="customRadio2" name="finish" class="custom-control-input" value="0">
+                    <label class="custom-control-label" for="customRadio2">未完成</label>
+                </div>
+            </div>
+        </div>
+        <button class="btn btn-primary submit_asa" onclick="submit(this)">提交</button>
+        <div class="footer mb-3 text-muted"
+            style="position: fixed; bottom: 0; left: 0; width: 100%; text-align: center;">
+            @鹏优创 新一代优质程序员
+        </div>
+    </div>
+</body>
+
+</html>
