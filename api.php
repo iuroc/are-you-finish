@@ -83,7 +83,7 @@ function submit()
     $finish = $_GET['finish'];
     mysqli_query($conn, "LOCK TABLES `$table` WRITE");
     mysqli_query($conn, "UPDATE `$table` SET `finish` = $finish WHERE `name` = '$name'");
-    mysqli_query($conn, "unlock TABLES");
+    mysqli_query($conn, "UNLOCK TABLES");
 }
 
 /**
