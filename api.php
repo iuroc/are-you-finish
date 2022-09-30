@@ -20,7 +20,9 @@ if ($order == 'get_list') {
     echo success(get_data());
 }
 
-
+/**
+ * 初始化数据表
+ */
 function init_database()
 {
     global $conn;
@@ -30,6 +32,10 @@ function init_database()
         `finish` BOOLEAN
     )");
 }
+
+/**
+ * 成功响应
+ */
 function success($data)
 {
     header('Content-type: application/json');
@@ -39,6 +45,10 @@ function success($data)
         'data' => $data
     ]);
 }
+
+/**
+ * 获取名单和完成情况
+ */
 function get_list()
 {
     global $conn;
@@ -47,6 +57,9 @@ function get_list()
     return mysqli_fetch_all($result);
 }
 
+/**
+ * 更新名单
+ */
 function update_list()
 {
     global $conn;
@@ -59,15 +72,23 @@ function update_list()
     }
 }
 
+/**
+ * 提交更新
+ */
 function submit()
 {
     global $conn;
     global $table;
     $name = $_GET['name'];
     $finish = $_GET['finish'];
+    mysqli_query($conn, "LOCK TABLES `$table` WRITE");
     mysqli_query($conn, "UPDATE `$table` SET `finish` = $finish WHERE `name` = '$name'");
+    mysqli_query($conn, "unlock TABLES");
 }
 
+/**
+ * 获取个人完成情况
+ */
 function get_data()
 {
     global $conn;
